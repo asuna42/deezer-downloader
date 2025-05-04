@@ -397,9 +397,11 @@ def download_song(song: dict, output_file: str) -> None:
             response.raise_for_status()
             with open(output_file, "w+b") as fo:
                 # Add song cover and first 30 seconds of unencrypted data
-                writeid3v2(fo, song)
+                if sound_format != "FLAC":
+                    writeid3v2(fo, song)
                 decryptfile(response, key, fo)
-                writeid3v1_1(fo, song)
+                if sound_format != "FLAC":
+                    writeid3v1_1(fo, song)
     except Exception as e:
         raise DeezerApiException(f"Could not write song to disk: {e}") from e
     else:
